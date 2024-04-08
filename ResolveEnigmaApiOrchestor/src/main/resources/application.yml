@@ -1,0 +1,3 @@
+server:
+  contextPath: /ResolveEnigma
+  port: 8080
