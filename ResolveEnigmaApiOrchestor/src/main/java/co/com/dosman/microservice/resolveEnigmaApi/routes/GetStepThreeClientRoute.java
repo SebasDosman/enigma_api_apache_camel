@@ -29,7 +29,9 @@ public class GetStepThreeClientRoute extends RouteBuilder {
     		public void process(Exchange exchange) throws Exception {
     			ClientJsonApiBodyResponseSuccess stepThreeResponse = ( ClientJsonApiBodyResponseSuccess ) exchange.getIn().getBody(ClientJsonApiBodyResponseSuccess.class);
                 
-    			if (stepThreeResponse.getData().get(0).getStep().equalsIgnoreCase("3")) {
+    			boolean isStepThree = stepThreeResponse.getData().get(0).getStep().equalsIgnoreCase("3");
+    			
+    			if (isStepThree) {
     				exchange.setProperty("Step3", "Step 3: ".concat(stepThreeResponse.getData().get(0).getStepDescription()));
     			} else {
     				exchange.setProperty("Error", "0005");
@@ -47,7 +49,8 @@ public class GetStepThreeClientRoute extends RouteBuilder {
         	}
         })
         .end()
-        .log("Response code: ${exchangeProperty[Error]}")
-        .log("Response description: ${exchangeProperty[descError]}");
+        .log("Response error code: ${exchangeProperty[Error]}")
+        .log("Response error description: ${exchangeProperty[descError]}")
+        .log("Response step description: ${exchangeProperty[Step3]}");
     }
 }

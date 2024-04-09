@@ -29,7 +29,9 @@ public class GetStepOneClientRoute extends RouteBuilder {
     		public void process(Exchange exchange) throws Exception {
     			ClientJsonApiBodyResponseSuccess stepOneResponse = ( ClientJsonApiBodyResponseSuccess ) exchange.getIn().getBody(ClientJsonApiBodyResponseSuccess.class);
 
-    			if (stepOneResponse.getData().get(0).getStep().equalsIgnoreCase("1")) {
+    			boolean isStepOne = stepOneResponse.getData().get(0).getStep().equalsIgnoreCase("1");
+    			
+    			if (isStepOne) {
     				exchange.setProperty("Step1", "Step 1: ".concat(stepOneResponse.getData().get(0).getStepDescription()));
     			} else {
     				exchange.setProperty("Error", "0001");
@@ -47,7 +49,8 @@ public class GetStepOneClientRoute extends RouteBuilder {
         	}
         })
         .end()
-        .log("Response code: ${exchangeProperty[Error]}")
-        .log("Response description: ${exchangeProperty[descError]}");
+        .log("Response error code: ${exchangeProperty[Error]}")
+        .log("Response error description: ${exchangeProperty[descError]}")
+        .log("Response step description: ${exchangeProperty[Step1]}");
     }
 }

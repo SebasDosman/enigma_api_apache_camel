@@ -27,10 +27,12 @@ public class GetStepTwoClientRoute extends RouteBuilder {
         .process(new Processor() {
     		@Override
     		public void process(Exchange exchange) throws Exception {
-    			ClientJsonApiBodyResponseSuccess stepOneResponse = ( ClientJsonApiBodyResponseSuccess ) exchange.getIn().getBody(ClientJsonApiBodyResponseSuccess.class);
+    			ClientJsonApiBodyResponseSuccess stepTwoResponse = ( ClientJsonApiBodyResponseSuccess ) exchange.getIn().getBody(ClientJsonApiBodyResponseSuccess.class);
                 
-    			if( stepOneResponse.getData().get(0).getStep().equalsIgnoreCase("2")) {
-    				exchange.setProperty("Step2", "Step 2: ".concat(stepOneResponse.getData().get(0).getStepDescription()));
+    			boolean isStepTwo = stepTwoResponse.getData().get(0).getStep().equalsIgnoreCase("2");
+    			
+    			if (isStepTwo) {
+    				exchange.setProperty("Step2", "Step 2: ".concat(stepTwoResponse.getData().get(0).getStepDescription()));
     			} else {
     				exchange.setProperty("Error", "0003");
     				exchange.setProperty("descError", "Step two is not valid");
@@ -47,7 +49,8 @@ public class GetStepTwoClientRoute extends RouteBuilder {
         	}
         })
         .end()
-        .log("Response code: ${exchangeProperty[Error]}")
-        .log("Response description: ${exchangeProperty[descError]}");
+        .log("Response error code: ${exchangeProperty[Error]}")
+        .log("Response error description: ${exchangeProperty[descError]}")
+        .log("Response step description: ${exchangeProperty[Step2]}");
     }
 }
